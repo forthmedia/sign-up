@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<!-- Kurt Jonach kurt@forth-media.com -->
+<html>
+    <head>
+        <title>Sign Up</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!-- CSS //////////////////////////////////////// -->
+
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                background-color: #efefef;
+                margin-top: 20px;
+            }
+            form {
+                width: 200px;
+                border: solid 1px #ccc;
+                padding: 8px 12px;
+                border-radius: 5px;
+                background-color: #fff;
+                box-shadow: 4px 4px 16px #ccc;
+            }
+            form span {
+                font-size: small;
+                font-weight: normal;
+                color: #ccc;
+                padding: 4px;
+                display: inline-block
+            }
+            .wrapper {
+               margin: 0 auto;
+            }
+            input[type="text"],
+            input[type="password"],
+            button
+            {
+                font-size: small;
+                color: #666;
+                padding: 3px;
+                margin: 3px;
+                width: 90%
+            }
+            button:hover {
+                cursor: pointer;
+                cursor: hand;
+            }
+
+            /* CSS can hide HTML LABEL tag that is required for accesibility (W3) */           
+            .hidden {
+                display: none;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <!-- HTML //////////////////////////////////////// -->
+        
+        <!-- use LABEL for INPUT so FORM is accessible -->
+
+        <form class="wrapper" onsubmit="onSubmit()">
+            <span>Sign up</span>
+
+            <!-- HTML pattern test for email format  -->
+            <label for="username" class="hidden">Username</label>
+            <input type="text" name="username" id="username" placeholder="Username" maxlength="56"
+             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+             oninvalid="setCustomValidity('Must be valid email')" 
+             oninput="setCustomValidity('')" required><br>
+
+             <!-- password and confirm password match are JavaScript validated -->
+            <label for="password" class="hidden">Password</label>
+            <input type="password" name="password" id="password" placeholder="Password" required><br>
+
+            <label for="confirm" class="hidden">Confirm Password</label>
+            <input type="password" name="confirm" id="confirm" placeholder="Confirm password" required><br>
+
+            <!-- HTML pattern test for max length and only characters -->
+            <label for="firstname" class="hidden">First name</label>
+            <input type="text" name="firstname" id="firstname" placeholder="First name" maxlength="50"
+             pattern="[A-Za-z]{1,50}" required><br>
+
+            <!-- HTML pattern test as above but this field is not required -->
+            <label for="lastname" class="hidden">Last name</label>
+            <input type="text" name="lastname" id="lastname" placeholder="Last name" maxlength="50"
+             pattern="[A-Za-z]{1,50}"><br>
+
+            <!-- birthdate format and age is validated by JavaScript -->
+            <label for="birthday" class="hidden">Birthday</label>
+            <input type="text" name="birthday" id="birthday" placeholder="Birthday MM/DD/YYYY"
+            oninput="setCustomValidity('')" required><br>
+
+            <button type="submit">Submit</button>
+        </form>
+
+        <!-- JAVASCRIPT //////////////////////////////////////// -->
+        
+        <script>
+
+            var password = document.getElementById("password");
+            password.onchange = validate;
+
+            var confirm = document.getElementById("confirm");
+            confirm.onkeyup = validate;
+
+            var birthday = document.getElementById("birthday");
+            birthday.onchange = birthdate;
+
+            // test password and confirm password length
+            // test password and confirm password are same
+            function validate() {
+                if (password.value.length < 6) {
+                    password.setCustomValidity("Password must be at least 6 characters");
+                } else {
+                    password.setCustomValidity("");
+                }
+                
+                if (confirm.value.length < 6) {
+                    confirm.setCustomValidity("Password must be at least 6 characters");
+                } else {
+                    password.setCustomValidity("");
+                }
+                
+                if (password.value != confirm.value) {
+                   confirm.setCustomValidity("Passwords do not match");
+                } else {
+                    confirm.setCustomValidity("");
+                }
+            }
+
+            // test birthday format
+            // then test birthday age
+            function birthdate() {
+                var birthday = document.getElementById("birthday");
+                var pattern = new RegExp("([0-9]{2})/\([0-9]{2})/\([0-9]{4})");
+                if (pattern.test(birthday.value) == false) {
+                    birthday.setCustomValidity("Enter MM/DD/YYYY");
+                    // invalid format cannot be processed so return
+                    return false;
+                } else {
+                    var values = birthday.value.split("/");
+                    var date = new Date(values[2], values[0], values[1]);
+                    var now = new Date();
+                    var age = now.getFullYear() - date.getFullYear();
+                    if (age < 14 || age > 150) {
+                        birthday.setCustomValidity("Age must be greater than 14 and less than 150.");
+                         return false;
+                    }
+                }           
+            }
+
+            // convert birthday to ISO
+            // pop up message prior to clearing form
+            function onSubmit() {
+                var birthday = document.getElementById("birthday");
+                var values = birthday.value.split("/");
+                var date = new Date(values[2], values[0], values[1]);
+                var iso = date.toISOString();
+                alert("Form validated. ISO 8601 date is " + iso);
+             }
+
+        </script>
+    </body>
+</html>
