@@ -14,7 +14,7 @@
                 margin-top: 20px;
             }
             form {
-                width: 200px;
+                width: 220px;
                 border: solid 1px #ccc;
                 padding: 8px 12px;
                 border-radius: 5px;
@@ -35,9 +35,9 @@
             input[type="password"],
             button
             {
-                font-size: small;
+                font-size: medium;
                 color: #666;
-                padding: 3px;
+                padding: 4px;
                 margin: 3px;
                 width: 90%
             }
@@ -45,12 +45,14 @@
                 cursor: pointer;
                 cursor: hand;
             }
-
+            .submit {
+                margin-left: 8px;
+            }
             /* CSS can hide HTML LABEL tag that is required for accesibility (W3) */           
             .hidden {
                 display: none;
             }
-
+            
         </style>
 
     </head>
@@ -68,31 +70,31 @@
             <input type="text" name="username" id="username" placeholder="Username" maxlength="56"
              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
              oninvalid="setCustomValidity('Must be valid email')" 
-             oninput="setCustomValidity('')" required><br>
+             oninput="setCustomValidity('')" required  aria-required="true"><br>
 
              <!-- password and confirm password match are JavaScript validated -->
             <label for="password" class="hidden">Password</label>
-            <input type="password" name="password" id="password" placeholder="Password" required><br>
+            <input type="password" name="password" id="password" placeholder="Password" required  aria-required="true"><br>
 
             <label for="confirm" class="hidden">Confirm Password</label>
-            <input type="password" name="confirm" id="confirm" placeholder="Confirm password" required><br>
+            <input type="password" name="confirm" id="confirm" placeholder="Confirm password" required  aria-required="true"><br>
 
             <!-- HTML pattern test for max length and only characters -->
             <label for="firstname" class="hidden">First name</label>
             <input type="text" name="firstname" id="firstname" placeholder="First name" maxlength="50"
-             pattern="[A-Za-z]{1,50}" required><br>
+             pattern="[A-Za-z]{1,50}" required aria-required="true"><br>
 
             <!-- HTML pattern test as above but this field is not required -->
             <label for="lastname" class="hidden">Last name</label>
             <input type="text" name="lastname" id="lastname" placeholder="Last name" maxlength="50"
-             pattern="[A-Za-z]{1,50}"><br>
+             pattern="[A-Za-z]{1,50}" aria-required="false"><br>
 
             <!-- birthdate format and age is validated by JavaScript -->
             <label for="birthday" class="hidden">Birthday</label>
             <input type="text" name="birthday" id="birthday" placeholder="Birthday MM/DD/YYYY"
-            oninput="setCustomValidity('')" required><br>
+            oninput="setCustomValidity('')" required aria-required="true"><br>
 
-            <button type="submit">Submit</button>
+            <button type="submit" class="submit">Submit</button>
         </form>
 
         <!-- JAVASCRIPT //////////////////////////////////////// -->
@@ -113,18 +115,21 @@
             function validate() {
                 if (password.value.length < 6) {
                     password.setCustomValidity("Password must be at least 6 characters");
+                    password.setAttribute("aria-invalid", !valid);
                 } else {
                     password.setCustomValidity("");
                 }
                 
                 if (confirm.value.length < 6) {
                     confirm.setCustomValidity("Password must be at least 6 characters");
+                    confirm.setAttribute("aria-invalid", !valid);
                 } else {
                     password.setCustomValidity("");
                 }
                 
                 if (password.value != confirm.value) {
-                   confirm.setCustomValidity("Passwords do not match");
+                    confirm.setCustomValidity("Passwords do not match");
+                    confirm.setAttribute("aria-invalid", !valid);
                 } else {
                     confirm.setCustomValidity("");
                 }
@@ -137,6 +142,7 @@
                 var pattern = new RegExp("([0-9]{2})/\([0-9]{2})/\([0-9]{4})");
                 if (pattern.test(birthday.value) == false) {
                     birthday.setCustomValidity("Enter MM/DD/YYYY");
+                    birthday.setAttribute("aria-invalid", !valid);
                     // invalid format cannot be processed so return
                     return false;
                 } else {
@@ -146,7 +152,8 @@
                     var age = now.getFullYear() - date.getFullYear();
                     if (age < 14 || age > 150) {
                         birthday.setCustomValidity("Age must be greater than 14 and less than 150.");
-                         return false;
+                        birthday.setAttribute("aria-invalid", !valid);
+                       return false;
                     }
                 }           
             }
