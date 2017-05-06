@@ -1,5 +1,5 @@
 # sign-up
-Modal sign up form with basic ARIA accessibilty.
+Modal sign up form with basic ARIA accessibility.
 
 Includes HTML5 pattern validation and/or JavaScript custom validation. Inline comments explain how or why various validation tests are done.
 
