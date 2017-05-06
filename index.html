@@ -9,17 +9,17 @@
 
         <style>
             body {
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-family: Verdana, sans-serif;
                 background-color: #efefef;
                 margin-top: 20px;
             }
             form {
-                width: 220px;
+                width: 240px;
                 border: solid 1px #ccc;
                 padding: 8px 12px;
                 border-radius: 5px;
                 background-color: #fff;
-                box-shadow: 4px 4px 16px #ccc;
+                box-shadow: 4px 4px 16px #000;
             }
             form span {
                 font-size: small;
@@ -28,43 +28,98 @@
                 padding: 4px;
                 display: inline-block
             }
-            .wrapper {
-               margin: 0 auto;
-            }
             input[type="text"],
-            input[type="password"],
-            button
+            input[type="password"]
             {
                 font-size: medium;
                 color: #666;
                 padding: 4px;
                 margin: 3px;
-                width: 90%
+                width: 90%;
+            }
+            button {
+                font-size: medium;
+                background: #adadff;
+                background: linear-gradient(#ccccff, #adadff);
+                border: none;
+                border-radius: 5px;
+                color: white;
+                padding: 4px;
+                margin: 3px;
             }
             button:hover {
+                background: #adadff;
                 cursor: pointer;
                 cursor: hand;
             }
             .submit {
-                margin-left: 8px;
+                margin-top: 4px;
+                margin-left: 4px;
+                margin-bottom: 8px;
+                width: 95%                
             }
             /* CSS can hide HTML LABEL tag that is required for accesibility (W3) */           
             .hidden {
                 display: none;
             }
-            
+            /*  modal background */
+            .modal {
+                display: block;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.75);
+                padding-top: 100px; /* offset dialog  */
+            }
+            /* dialog box */
+            .dialog {
+                margin: auto;
+            }
+            .close {
+                color: #ccc;
+                float: right;
+                font-size: medium;
+                font-weight: bold;
+            }
+            .close:hover, .close:focus {
+                color: #F03;
+                cursor: pointer;
+            }
+            .launch {
+                margin: 100px auto;
+                width: 50%;
+                text-align: center;
+            }
+            .launch > button {
+                border: 1px solid black;
+                background: black;
+            }
+            .launch > button:hover {
+                background: white;
+                color: black;
+            }
         </style>
 
     </head>
     <body>
 
-        <!-- HTML //////////////////////////////////////// -->
-        
-        <!-- use LABEL for INPUT so FORM is accessible -->
+    <!-- HTML //////////////////////////////////////// -->
+    <p>modal sign up</p>
+    
+    <div class="launch">
+        <p id="info"></p>
+        <button id="open"> Open Dialog </button>
+    </div>
 
-        <form class="wrapper" onsubmit="onSubmit()">
-            <span>Sign up</span>
+    <div class="modal">
 
+        <form class="dialog" onsubmit="onSubmit(event)">
+            <span class="close">&times;</span>
+            
             <!-- HTML pattern test for email format  -->
             <label for="username" class="hidden">Username</label>
             <input type="text" name="username" id="username" placeholder="Username" maxlength="56"
@@ -94,13 +149,25 @@
             <input type="text" name="birthday" id="birthday" placeholder="Birthday MM/DD/YYYY"
             oninput="setCustomValidity('')" required aria-required="true"><br>
 
-            <button type="submit" class="submit">Submit</button>
+            <button type="submit" class="submit">Sign up</button>
         </form>
-
+    </div>
         <!-- JAVASCRIPT //////////////////////////////////////// -->
         
         <script>
 
+             // modal control
+            var modal = document.getElementsByClassName("modal")[0];
+            var close = document.getElementsByClassName("close")[0];
+            close.onclick = function() {
+                modal.style.display = "none";
+            }
+            var open = document.getElementById("open");
+            open.onclick = function() {
+                modal.style.display = "block";
+            }
+
+            // form control
             var password = document.getElementById("password");
             password.onchange = validate;
 
@@ -160,12 +227,15 @@
 
             // convert birthday to ISO
             // pop up message prior to clearing form
-            function onSubmit() {
+            function onSubmit(event) {
                 var birthday = document.getElementById("birthday");
                 var values = birthday.value.split("/");
                 var date = new Date(values[2], values[0], values[1]);
                 var iso = date.toISOString();
-                alert("Form validated. ISO 8601 date is " + iso);
+                var info = document.getElementById("info");
+                info.innerHTML = "Form validated.<br>ISO 8601 date is " + iso;
+                modal.style.display = "none";
+                event.preventDefault();
              }
 
         </script>
